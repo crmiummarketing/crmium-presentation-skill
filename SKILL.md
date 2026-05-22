@@ -1,54 +1,123 @@
 ---
 name: crmium-presentation-bento
 description: >
-  ACTIVATES whenever a user mentions creating/making/generating a presentation,
-  deck, slides, slide-deck, prezentacja, презентація, слайди, виступ, доповідь,
-  prezka, talk, webinar, summit deck, demo deck, pitch, speaker deck — in ANY
-  language (UA/EN/PL/RU) and ANY phrasing ("зроби презентацію", "потрібні
-  слайди", "make me a deck", "create slides", "готовлюся до виступу", "буду
-  виступати", "мені треба презентація для X", "потрібно зробити презу" etc).
-  Also activates if user types `/crmium-presentation-bento`.
+  ⚠️ TAKES PRIORITY OVER anthropic-skills:pptx and any generic presentation
+  skill WHENEVER the user mentions CRMiUM, Bento style, фірмовий стиль,
+  brand presentation, OR uses Ukrainian/Polish/Russian phrasing. This is
+  the ONLY skill that produces presentations with the correct CRMiUM brand
+  identity.
 
-  Generates CRMiUM-branded presentations using the Bento design system —
-  dark theme (#15171C) + orange accent (#EF652F) + white, Onest typography,
-  full-viewport 16:9 slides with smooth slide transitions, keyboard navigation,
-  hover-lift cards, gradient section dividers with CRMiUM-outline watermark,
-  QR codes (question form → CRM lead, Telegram bot for materials), and
-  in-browser PDF export. Universal skill for any speaker on any topic.
-  Stores a list of saved speakers in user-config.md so subsequent runs let
-  you pick from existing speakers OR add a new one.
+  ACTIVATES on: "презентація", "слайди", "виступ", "доповідь", "prezka",
+  "Bento", "Bento-стилі", "CRMiUM presentation", "фірмова презентація",
+  "presentation", "slides", "deck", "slide-deck", "talk", "webinar",
+  "summit deck", "demo deck", "pitch", "speaker deck", "prezentacja",
+  "prezentacja sprzedażowa", in ANY phrasing ("зроби презентацію",
+  "потрібні слайди", "make me a deck", "create slides", "готовлюся до
+  виступу", "буду виступати", "мені треба презентація для X", "потрібно
+  зробити презу"). Also activates on `/crmium-presentation-bento`.
 
-  CRITICAL behavior: when activated, ALWAYS start with onboarding via
-  AskUserQuestion — NEVER generate slides without asking the speaker for
-  language, format, contacts (or pick existing), theme, audience, slide
-  count, QR preference, and draft/theses FIRST. Even if user provided
-  partial info in their first message, ask for the missing pieces.
+  ⚠️ MANDATORY OUTPUT FORMAT: single-file HTML index.html (NOT pptx, NOT
+  docx, NOT pdf). NEVER delegate this task to anthropic-skills:pptx or
+  any other skill. Even if the user mentions "PowerPoint" or "слайди для
+  PPT" — generate HTML and tell the user how to convert it to PDF/PPTX
+  manually. PPTX format cannot preserve the Bento design (gradients,
+  Onest font, animations, watermarks).
+
+  ⚠️ MANDATORY COLORS (NEVER substitute, NEVER invent "premium" alternatives):
+  - Dark background: #15171C (NOT #000, NOT #1a1a1a, NOT any dark grey)
+  - Orange accent: #EF652F (NOT lime, NOT yellow-green, NOT blue, NOT
+    any other color. Hover #D45520. Lighter #F58456.)
+  - White: #FFFFFF
+  - Card background: #1B1E25 (slightly lighter than dark)
+  These three colors only. NEVER add green, blue, purple, lime, or any
+  fourth color. The skill description and brand.css enforce this.
+
+  ⚠️ MANDATORY TYPOGRAPHY: Onest font family (Google Fonts) — NEVER
+  Manrope, Inter, Plus Jakarta Sans, or any other font. JetBrains Mono
+  for eyebrow/labels.
+
+  ⚠️ MANDATORY STARTING POINT: Read `reference/template/index.html` as
+  base. COPY its structure, modify only text/content. NEVER reinvent slide
+  layout from scratch. NEVER generate "your own interpretation of Bento" —
+  Bento style here is precisely defined by template/index.html and
+  reference/slide-recipes.md. Reading the template is step 1 BEFORE anything.
+
+  Generates 16:9 full-viewport HTML slides with smooth transitions, keyboard
+  navigation, hover-lift cards, gradient section dividers with CRMiUM-outline
+  watermark, QR codes (question form → CRM lead, Telegram bot for materials),
+  and in-browser PDF export via Ctrl+P. Universal — any speaker, any topic.
+  Stores saved speakers in user-config.md.
+
+  ⚠️ CRITICAL behavior on activation:
+  1. READ reference/template/index.html FIRST (full file)
+  2. READ reference/design-system.md, slide-recipes.md, company-info.md
+  3. ASK onboarding questions via AskUserQuestion (language, format,
+     speaker, theme, QR, draft) — NEVER skip
+  4. ONLY THEN copy template and modify content
 ---
 
 # CRMiUM Presentation (Bento Style) — Skill
 
-Скіл генерує фірмові презентації CRMiUM у Bento-дизайні. Універсальний — підходить для будь-якого спікера, теми, мови (UA/EN/PL/RU). Підтримує **збереження кількох спікерів** — кожна нова презентація може бути для одного зі збережених або нового спікера.
+Скіл генерує фірмові презентації CRMiUM у Bento-дизайні. Універсальний — підходить для будь-якого спікера, теми, мови (UA/EN/PL/RU). Підтримує **збереження кількох спікерів**.
 
 ---
 
-## 🚨 КРИТИЧНЕ ПРАВИЛО АКТИВАЦІЇ
+## 🛑 АБСОЛЮТНІ ЗАБОРОНИ — ПРОЧИТАЙ ПЕРЕД БУДЬ-ЯКОЮ ДІЄЮ
+
+### ❌ НЕ використовуй `anthropic-skills:pptx` для цієї задачі
+Цей скіл генерує **тільки HTML**. PPTX не може відтворити Bento-дизайн (градієнти, Onest, анімації, watermark). Навіть якщо спікер сказав "PPT" або "PowerPoint" — поясни що HTML-презентація працює у будь-якому браузері, експортується у PDF через Ctrl+P, і виглядає 1-в-1 як на скрінах. PPTX = втрата дизайну.
+
+### ❌ НЕ вигадуй "власну преміум палітру"
+Палітра ВИЗНАЧЕНА — змінювати її **заборонено**:
+- `#15171C` темний фон (НЕ `#000`, НЕ `#1a1a1a`, НЕ темно-сірий, НЕ темно-синій)
+- `#EF652F` помаранч (НЕ зелений, НЕ салатовий, НЕ лайм, НЕ жовтий, НЕ синій, НЕ фіолетовий)
+- `#FFFFFF` білий
+
+Третього кольору-акценту немає. Сторонні "технологічні зелені" / "корпоративні сині" / "преміум золоті" — **заборонені**. Якщо тебе хочеться додати градієнт-акцент — це має бути градієнт самого `#EF652F` (`linear-gradient(135deg, #7A2D14 0%, #15171C 100%)` як на section-divider).
+
+### ❌ НЕ генеруй "свою інтерпретацію Bento"
+Bento тут — це не загальне поняття. Це **конкретний CSS** з `reference/template/index.html` і **конкретні патерни** з `reference/slide-recipes.md`. ОБОВʼЯЗКОВО:
+
+1. Прочитай `reference/template/index.html` повністю (~1400 рядків)
+2. Прочитай `reference/slide-recipes.md`
+3. Прочитай `reference/design-system.md`
+4. Прочитай `reference/company-info.md`
+5. **Скопіюй template/index.html** як основу і заміни тільки текст/контент
+6. **НЕ переписуй CSS**, не міняй класи `.slide`, `.qr-card`, `.bento-card` тощо
+7. **НЕ генеруй HTML "з нуля"** — це гарантовано буде не Bento-стиль
+
+### ❌ НЕ пропускай онбоардинг
 
 При активації скіла **обовʼязково** виконай у такому порядку:
 
-1. **Перевір `user-config.md`** (P1.1-P1.3)
-2. **Задай питання спікеру через AskUserQuestion** (P1.4-P1.5):
+1. **Прочитай `reference/template/index.html` + reference/*.md** (ОБОВʼЯЗКОВО, інакше не зрозумієш дизайн)
+2. **Перевір `user-config.md`** (P1.1-P1.3)
+3. **Задай питання спікеру через AskUserQuestion** (P1.4-P1.5):
    - Мову (якщо нема `default_language`)
-   - Формат HTML/PDF/PPTX (якщо нема `default_format`)
+   - Формат HTML/PDF — за замовчуванням HTML (PPTX не пропонуй якщо спікер сам не попросив)
    - Хто спікер: обрати з існуючих або додати нового
    - Якщо новий — імʼя, посада, email, телефон, LinkedIn, Telegram, photo URL, біо
    - Тему презентації + аудиторію + контекст + кількість слайдів + CRMiUM intro?
    - QR-коди: обидва / тільки питання / тільки Telegram / без QR
    - Драфт/тези презентації або генерувати каркас?
-3. **Лише ПІСЛЯ ВСІХ відповідей** починай генерувати слайди.
+4. **Лише ПІСЛЯ ВСІХ відповідей** копіюй template і починай заміну контенту.
 
-⚠️ **НЕ ВИГАДУЙ контент без онбоардингу.** НЕ генеруй презентацію з placeholder-ами якщо спікер не дав відповіді. НЕ скорочуй онбоардинг навіть якщо повідомлення спікера здається "достатньо інформативним" — питай явно.
+⚠️ **НЕ ВИГАДУЙ контент без онбоардингу.** НЕ генеруй презентацію з placeholder-ами якщо спікер не дав відповіді. НЕ скорочуй онбоардинг навіть якщо повідомлення спікера здається "достатньо інформативним".
 
-⚠️ **Якщо повідомлення спікера лише трігер ("зроби презентацію" / "хочу слайди" / "/crmium-presentation-bento")** — стартуй онбоардинг з нуля.
+⚠️ **Якщо повідомлення спікера лише трігер** — стартуй онбоардинг з нуля.
+
+---
+
+## ✅ ЯК ПРАВИЛЬНО (швидкий чек)
+
+1. ✅ Output: `projects/<event>-<speaker>/index.html` — single-file HTML
+2. ✅ Кольори: рівно 3 (`#15171C` / `#EF652F` / `#FFFFFF`)
+3. ✅ Шрифти: Onest (display+body) + JetBrains Mono (eyebrow)
+4. ✅ Layout: copy template/index.html → змінено тільки текст
+5. ✅ Слайди: 16:9, full viewport, transform-translateX навігація
+6. ✅ Watermark CRMiUM на section/qa слайдах
+7. ✅ QR коди (за вибором спікера у онбоардингу)
+8. ✅ Спікер питаний через AskUserQuestion ДО генерації
 
 ---
 
