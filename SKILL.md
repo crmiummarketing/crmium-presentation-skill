@@ -1,23 +1,54 @@
 ---
 name: crmium-presentation-bento
 description: >
+  ACTIVATES whenever a user mentions creating/making/generating a presentation,
+  deck, slides, slide-deck, prezentacja, презентація, слайди, виступ, доповідь,
+  prezka, talk, webinar, summit deck, demo deck, pitch, speaker deck — in ANY
+  language (UA/EN/PL/RU) and ANY phrasing ("зроби презентацію", "потрібні
+  слайди", "make me a deck", "create slides", "готовлюся до виступу", "буду
+  виступати", "мені треба презентація для X", "потрібно зробити презу" etc).
+  Also activates if user types `/crmium-presentation-bento`.
+
   Generates CRMiUM-branded presentations using the Bento design system —
   dark theme (#15171C) + orange accent (#EF652F) + white, Onest typography,
   full-viewport 16:9 slides with smooth slide transitions, keyboard navigation,
   hover-lift cards, gradient section dividers with CRMiUM-outline watermark,
-  and in-browser PDF export. Universal skill for any speaker on any topic
-  (events, webinars, internal demos). Stores a list of saved speakers in
-  user-config.md so subsequent runs let you pick from existing speakers OR
-  add a new one. Produces a single-file HTML deck ready to present
-  (F11 fullscreen) or to export to PDF (browser Print → Save as PDF).
-  Trigger words: "презентація", "слайди", "виступ", "деки", "demo deck",
-  "presentation", "slides", "talk", "webinar deck", "summit deck",
-  "prezentacja", "prezentacja sprzedażowa", "speaker deck".
+  QR codes (question form → CRM lead, Telegram bot for materials), and
+  in-browser PDF export. Universal skill for any speaker on any topic.
+  Stores a list of saved speakers in user-config.md so subsequent runs let
+  you pick from existing speakers OR add a new one.
+
+  CRITICAL behavior: when activated, ALWAYS start with onboarding via
+  AskUserQuestion — NEVER generate slides without asking the speaker for
+  language, format, contacts (or pick existing), theme, audience, slide
+  count, QR preference, and draft/theses FIRST. Even if user provided
+  partial info in their first message, ask for the missing pieces.
 ---
 
 # CRMiUM Presentation (Bento Style) — Skill
 
 Скіл генерує фірмові презентації CRMiUM у Bento-дизайні. Універсальний — підходить для будь-якого спікера, теми, мови (UA/EN/PL/RU). Підтримує **збереження кількох спікерів** — кожна нова презентація може бути для одного зі збережених або нового спікера.
+
+---
+
+## 🚨 КРИТИЧНЕ ПРАВИЛО АКТИВАЦІЇ
+
+При активації скіла **обовʼязково** виконай у такому порядку:
+
+1. **Перевір `user-config.md`** (P1.1-P1.3)
+2. **Задай питання спікеру через AskUserQuestion** (P1.4-P1.5):
+   - Мову (якщо нема `default_language`)
+   - Формат HTML/PDF/PPTX (якщо нема `default_format`)
+   - Хто спікер: обрати з існуючих або додати нового
+   - Якщо новий — імʼя, посада, email, телефон, LinkedIn, Telegram, photo URL, біо
+   - Тему презентації + аудиторію + контекст + кількість слайдів + CRMiUM intro?
+   - QR-коди: обидва / тільки питання / тільки Telegram / без QR
+   - Драфт/тези презентації або генерувати каркас?
+3. **Лише ПІСЛЯ ВСІХ відповідей** починай генерувати слайди.
+
+⚠️ **НЕ ВИГАДУЙ контент без онбоардингу.** НЕ генеруй презентацію з placeholder-ами якщо спікер не дав відповіді. НЕ скорочуй онбоардинг навіть якщо повідомлення спікера здається "достатньо інформативним" — питай явно.
+
+⚠️ **Якщо повідомлення спікера лише трігер ("зроби презентацію" / "хочу слайди" / "/crmium-presentation-bento")** — стартуй онбоардинг з нуля.
 
 ---
 
