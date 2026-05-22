@@ -771,12 +771,25 @@ Q&A слайд має QR код на форму. Усі питання з фор
 
 ### Спільний QR-card компонент (для Q&A і Resources)
 
-Біла "карта-картка" з QR кодом — використовується на двох слайдах. Гарно контрастує з темним фоном.
+QR код може бути в одному з двох варіантів:
+- **`.qr-card`** — на темній картці (для випадків коли потрібен контейнер з підписом)
+- **`.qr-card .qr-card--bare`** — без підложки, чисто на фоні слайда (для випадків коли watermark/інші елементи поряд і картка зайва)
 
-**CSS:**
+### ⚠️ КРИТИЧНО: PNG QR картинки розраховані ТІЛЬКИ на темний фон
+
+QR-файли (`crmium-ask-question-qr.png`, `crmium-ua-bot-qr.png`) — це **білі pixel-и QR + помаранчеві куточки на прозорому фоні**. Це означає:
+
+✅ **На темному фоні** (дефолтні слайди `#15171C`) — QR видно чітко, можна без підложки (`qr-card--bare`) АБО на темній картці (`qr-card` без модифікатора).
+
+❌ **На світлому фоні** (якщо хтось перепаластрить слайд на світлий) — QR **зникне** (білий на білому). У такому випадку **обовʼязково потрібна темна підложка** під QR. Не використовуй `qr-card--bare` і не роби `qr-card { background: #FFFFFF }`. Лиши `qr-card { background: var(--c-card) }` або інший темний колір.
+
+**Правило для Claude:** перед розміщенням QR перевір фон слайда — якщо `background` слайда містить світлі тони (`#FFFFFF`, `#FAF8F5`, або вище 50% lightness) — **обовʼязково** використовуй `.qr-card` з темним `background: var(--c-card)`, **ніколи** `.qr-card--bare`.
+
+**CSS (поточна реалізація):**
 ```css
 .qr-card {
-  background: #FFFFFF;
+  background: var(--c-card);           /* темна картка #1B1E25 */
+  border: 1px solid var(--c-line);
   border-radius: 24px;
   padding: 28px;
   display: flex;
@@ -785,24 +798,38 @@ Q&A слайд має QR код на форму. Усі питання з фор
   gap: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
-.qr-card img { width: 320px; height: 320px; display: block; }
+.qr-card img { width: 340px; height: 340px; display: block; }
 .qr-card-label {
   font-family: var(--font-display);
   font-size: 17px;
-  color: #15171C;
+  color: var(--c-ink);
   font-weight: 600;
   text-align: center;
-  max-width: 320px;
+  max-width: 340px;
   line-height: 1.3;
 }
 .qr-card-sublabel {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: rgba(21,23,28,0.6);
-  letter-spacing: 0.14em;
+  color: var(--c-acc);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  font-weight: 600;
 }
+/* Variant без підложки — QR просто на темному фоні слайда */
+.qr-card--bare {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+.qr-card--bare img { width: 380px; height: 380px; }
 ```
+
+**⚠️ ЯКЩО ХОЧЕШ РОБИТИ СВІТЛИЙ ВАРІАНТ СЛАЙДА** (наприклад spec-request від спікера "білий фон як на корпоративних деках"):
+1. Не використовуй поточні PNG QR — вони не будуть видні
+2. Або згенеруй темні QR (чорні pixels на прозорому) і клади їх замість поточних
+3. Або обовʼязково тримай QR на темній підложці `.qr-card` навіть на світлому слайді — буде "острівець" темного у білому слайді, контраст для сканування
 
 ### Як це працює у workflow
 
