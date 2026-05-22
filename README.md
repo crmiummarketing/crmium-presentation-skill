@@ -7,10 +7,13 @@
 - HTML-презентація у фірмовому стилі — 1 файл, ~30 KB
 - Презентувати з браузера (F11 fullscreen), стрілки ←→ для навігації
 - Експорт у PDF через Ctrl+P → Save as PDF
-- Готові базові слайди: cover, speaker intro, CRMiUM intro, agenda, Q&A, contacts
-- 11 типів контентних слайдів: bullets, stats, bento, quote, image, compare, timeline і т.д.
+- Готові базові слайди: cover, speaker intro, CRMiUM intro, agenda, Q&A з **QR на форму питань**, Resources з **QR на Telegram-бот**, contacts
+- 11+ типів контентних слайдів: bullets, stats, bento, quote, image, compare, timeline, pains-grid, features-grid
 - 4 мови: UA / EN / PL / RU
-- Контакти спікера запитуються один раз і зберігаються
+- Контакти спікера запитуються один раз і зберігаються (multi-speaker підтримка)
+- 2 QR-коди по замовчуванню:
+  - **На Q&A слайді** — аудиторія може задати питання анонімно через форму
+  - **На Resources слайді** — підписка на Telegram-бот, куди після виступу кидаються корисні матеріали
 
 ---
 
@@ -144,6 +147,16 @@ git clone https://github.com/crmiummarketing/crmium-presentation-skill ~/.claude
 
 **А якщо я не CRMiUM-спікер? Чи можу використати скіл?**
 Так, скіл публічний (MIT). Просто заміни лого з CRMiUM CDN на своє у двох місцях у `index.html`, заміни `company-info.md` своїм elevator-pitch, і користуйся.
+
+**Що це за QR-коди на Q&A і Resources слайдах?**
+- **QR на Q&A слайді** — посилання на форму "задай питання". Аудиторія сканує і пише питання анонімно. Спікер бачить питання на ноутбуці і відповідає вголос. Корисно для шиньковатих або для онлайн-формату.
+- **QR на Resources слайді** — посилання на Telegram-бот CRMiUM. Аудиторія підписується після виступу. Маркетинг-команда після виступу кидає у бот корисні матеріали (посилання які спікер згадував, кейси, чек-листи).
+
+**Не хочу QR — як їх вимкнути?**
+Скажи Claude при генерації: "без QR на питання" або "без Resources-слайда". Можна також відкрити готовий `index.html` і видалити `<section class="slide slide--qa">` / `<section class="slide slide--resources">` блоки — JS автоматично пере-порахує загальну кількість слайдів.
+
+**Як замінити QR-коди на свої?**
+Replace файли `assets/crmium-ask-question-qr.png` (питання) і `assets/crmium-ua-bot-qr.png` (Telegram) на свої. Розмір — 320×320px рекомендовано, PNG з прозорим або білим фоном.
 
 ---
 

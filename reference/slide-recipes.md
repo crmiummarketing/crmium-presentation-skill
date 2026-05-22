@@ -681,14 +681,26 @@
 
 ---
 
-## 15. Q&A (gradient + watermark + великий "Питання?")
+## 15. Q&A — 2-колонний з QR кодом на питання
+
+Q&A слайд тепер має QR код для анонімних питань через форму. Корисно коли аудиторія соромиться задавати вголос або це онлайн-вебінар. QR картинка — `assets/crmium-ask-question-qr.png`.
 
 ```html
 <section class="slide slide--qa" data-slide="10">
   <img class="slide-watermark" src="assets/crmium-outline.png" alt="">
-  <div class="slide-content">
-    <h1 class="qa-text reveal"><em>Питання?</em></h1>
-    <p class="qa-sub reveal">Час для діалогу</p>
+  <div class="slide-content qa-grid">
+    <div class="qa-text-side">
+      <h1 class="qa-text reveal"><em>Питання?</em></h1>
+      <p class="qa-sub reveal">
+        Сором'язно говорити вголос? Сканнуй QR — задай питання
+        анонімно через форму, я відповім тут і зараз.
+      </p>
+    </div>
+    <div class="qr-card reveal">
+      <img src="assets/crmium-ask-question-qr.png" alt="QR — форма для питань">
+      <div class="qr-card-sublabel">ЗАДАТИ ПИТАННЯ</div>
+      <div class="qr-card-label">Сканнуй щоб написати питання у формі</div>
+    </div>
   </div>
 </section>
 ```
@@ -701,12 +713,102 @@
     radial-gradient(80% 70% at 0% 0%, rgba(239,101,47,0.10) 0%, transparent 50%),
     var(--c-bg);
 }
-.qa-text { font-size: clamp(120px, 16vw, 280px); font-weight: 800; line-height: 0.9; letter-spacing: -0.045em; color: #FFFFFF; }
+.qa-grid { display: grid; grid-template-columns: 1fr auto; gap: 80px; align-items: center; }
+.qa-text { font-size: clamp(96px, 12vw, 220px); font-weight: 800; line-height: 0.9; letter-spacing: -0.045em; color: #FFFFFF; }
 .qa-text em { font-style: normal; color: var(--c-acc); font-weight: 800; }
-.qa-sub { font-size: 30px; color: var(--c-ink-2); margin-top: 32px; }
+.qa-sub { font-size: 26px; color: var(--c-ink-2); margin-top: 32px; line-height: 1.4; max-width: 560px; }
 ```
 
-⚠️ На Q&A слайді хедер також ховається (через `body.no-bar`).
+⚠️ На Q&A слайді хедер ховається автоматично (через `body.no-bar`).
+
+---
+
+## 16. Resources — Telegram-бот для матеріалів (QR)
+
+Окремий слайд перед Contact для підписки на Telegram-бот, куди спікер після виступу кидає корисні матеріали (посилання з презентації, кейси клієнтів, чек-листи, дайджест Zoho-новин). QR — `assets/crmium-ua-bot-qr.png`.
+
+```html
+<section class="slide slide--resources" data-slide="11">
+  <div class="slide-content resources-grid">
+    <div class="resources-info">
+      <div class="eyebrow reveal">КОРИСНІ МАТЕРІАЛИ</div>
+      <h2 class="resources-h reveal">Хочеш ще <em>більше</em>?</h2>
+      <p class="resources-text reveal">
+        Підпишись на наш Telegram-бот — після кожного виступу
+        кидаю туди корисні матеріали по темі:
+      </p>
+      <ul class="resources-features reveal">
+        <li>Посилання з цієї презентації</li>
+        <li>Кейси клієнтів CRMiUM повністю</li>
+        <li>Чек-листи з впровадження Zoho</li>
+        <li>Дайджест Zoho-новин раз на місяць</li>
+      </ul>
+    </div>
+    <div class="qr-card reveal">
+      <img src="assets/crmium-ua-bot-qr.png" alt="QR — Telegram бот CRMiUM">
+      <div class="qr-card-sublabel">TELEGRAM</div>
+      <div class="qr-card-label">Сканнуй щоб підписатися</div>
+    </div>
+  </div>
+</section>
+```
+
+**CSS:**
+```css
+.slide--resources {
+  background:
+    radial-gradient(100% 80% at 100% 0%, rgba(239,101,47,0.15) 0%, transparent 55%),
+    var(--c-bg);
+}
+.resources-grid { display: grid; grid-template-columns: 1fr auto; gap: 80px; align-items: center; }
+.resources-h { font-size: clamp(48px, 5.5vw, 92px); font-weight: 800; line-height: 1.0; letter-spacing: -0.035em; color: var(--c-ink); margin-bottom: 28px; }
+.resources-h em { font-style: normal; color: var(--c-acc); font-weight: 800; }
+.resources-text { font-size: 22px; color: var(--c-ink-2); line-height: 1.55; max-width: 620px; }
+.resources-features { list-style: none; padding: 0; margin-top: 32px; display: flex; flex-direction: column; gap: 14px; }
+.resources-features li { font-size: 19px; color: var(--c-ink); padding-left: 28px; position: relative; line-height: 1.4; }
+.resources-features li::before { content: '→'; position: absolute; left: 0; top: 0; color: var(--c-acc); font-weight: 700; }
+```
+
+### Спільний QR-card компонент (для Q&A і Resources)
+
+Біла "карта-картка" з QR кодом — використовується на двох слайдах. Гарно контрастує з темним фоном.
+
+**CSS:**
+```css
+.qr-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.qr-card img { width: 320px; height: 320px; display: block; }
+.qr-card-label {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: #15171C;
+  font-weight: 600;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.3;
+}
+.qr-card-sublabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(21,23,28,0.6);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+```
+
+### Як це працює у workflow
+
+1. **Спікер презентує** → доходить до Q&A слайда → аудиторія сканує QR → пише питання у форму → спікер бачить питання на своєму ноутбуці і відповідає.
+2. **Після виступу** → доходить до Resources → аудиторія сканує QR → підписується на Telegram-бот.
+3. **Маркетинг-команда** після виступу кидає у бот посилання які згадував спікер (наприклад "Zoho Sales" — після слайда про Sales-модуль).
 
 ---
 

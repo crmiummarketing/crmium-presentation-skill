@@ -149,9 +149,11 @@ last_used_speaker: oleksandr-melnyk
 ```
 projects/<slug>/
 ├── index.html               ← презентація (single-file inline CSS+JS)
-├── assets/                  ← локальні картинки (логотип, watermark) — копіюються з template/
-│   ├── crmium-logo-white.png
-│   └── crmium-outline.png
+├── assets/                  ← локальні картинки — копіюються з template/
+│   ├── crmium-logo-white.png        ← логотип (44px у topbar)
+│   ├── crmium-outline.png           ← watermark (контурний CRMiUM на section/qa слайдах)
+│   ├── crmium-ask-question-qr.png   ← QR на форму "задай питання" — для Q&A слайда
+│   └── crmium-ua-bot-qr.png         ← QR на Telegram-бот — для Resources слайда
 └── README.md                ← як презентувати + експорт у PDF
 ```
 
@@ -178,9 +180,27 @@ projects/<slug>/
    - **Compare (slide--compare)** — до/після, A/B
    - **Timeline (slide--timeline)** — process steps
 
-6. **Q&A (slide--qa)** — gradient + watermark + великий помаранчевий "Питання?" (мовою з config).
+6. **Q&A (slide--qa)** — gradient + watermark + 2-колонний layout:
+   - **Зліва**: великий помаранчевий "Питання?" (мовою з config) + subtitle про QR
+   - **Справа**: біла QR-картка `assets/crmium-ask-question-qr.png` з підписом "Сканнуй щоб задати питання у формі"
+   - Аудиторія може задати питання анонімно через форму — особливо корисно для шиньковатих або для онлайн-вебінарів
 
-7. **Contact (slide--contact)** — eyebrow "КОНТАКТИ" → велике імʼя → посада → 4 contact-картки (email/phone/linkedin/site) з контактів спікера → логотип CRMiUM знизу.
+7. **Resources (slide--resources)** — Telegram-бот для корисних матеріалів:
+   - Eyebrow "КОРИСНІ МАТЕРІАЛИ"
+   - H2 "Хочеш ще більше?"
+   - Текст про бот + 3-4 пункти що буде кидатися (посилання з презентації, кейси, чек-листи, дайджест)
+   - Праворуч біла QR-картка `assets/crmium-ua-bot-qr.png`
+   - **Спікер після виступу** кидає у цей бот посилання які згадував у презентації — підписники отримають їх автоматично
+
+8. **Contact (slide--contact)** — eyebrow "КОНТАКТИ" → велике імʼя → посада → 4 contact-картки (email/phone/linkedin/site) з контактів спікера → логотип CRMiUM знизу.
+
+### Опційно: чи включати QR-слайди
+
+QR-слайди (Q&A з QR + Resources з Telegram) — **за замовчуванням включені** у всі презентації. Якщо спікер не хоче — або:
+- Перед генерацією явно скаже "без QR" / "без Telegram-слайда" / "без QR на питання"
+- Або після генерації попросить видалити цей слайд
+
+Для внутрішніх презентацій (де всі вже у боті) — Resources-слайд можна пропустити. Для зовнішніх — обовʼязково лишити.
 
 ### P1.9 — Перевір у Preview (якщо є MCP)
 
